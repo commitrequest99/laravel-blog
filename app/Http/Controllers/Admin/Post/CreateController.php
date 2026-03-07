@@ -4,11 +4,16 @@ namespace App\Http\Controllers\Admin\Post;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Http\Controllers\Admin\Post\BaseController;
 
-class CreateController extends Controller
+class CreateController extends BaseController
 {
     public function __invoke()
     {
-        return view('admin.post.create');
+        $categories = Category::all();
+        $tags = Tag::all();
+        return view('admin.post.create', compact('categories', 'tags'));
     }
 }
