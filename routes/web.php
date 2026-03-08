@@ -35,11 +35,25 @@ use App\Http\Controllers\Admin\User\EditController as EditUserController;
 use App\Http\Controllers\Admin\User\UpdateController as UpdateUserController;
 use App\Http\Controllers\Admin\User\DeleteController as DeleteUserController;
 
+use App\Http\Controllers\Personal\Main\IndexController as PersonalController;
+use App\Http\Controllers\Personal\Liked\IndexController as LikedController;
+use App\Http\Controllers\Personal\Liked\DeleteController as DeleteLikedController;
+use App\Http\Controllers\Personal\Comment\IndexController as CommentController;
+use App\Http\Controllers\Personal\Comment\DeleteController as DeleteCommentController;
 
+Route::get('/', IndexController::class)->name('admin.main.index');
 
-Route::get('/', IndexController::class);
+Route::prefix('personal')->middleware('auth','verified')->group(function() {
+    Route::get('/main', PersonalController::class)->name('personal.main.index');
 
-Route::prefix('admin')->group(function() {
+    Route::get('/liked', LikedController::class)->name('personal.liked.index');
+
+    Route::delete('/liked/{post}', DeleteLikedController::class)->name('personal.liked.delete');
+
+    Route::get('/comment', CommentController::class)->name('personal.comment.index');
+    Route::delete('/comment/{comment}', DeleteCommentController::class)->name('personal.comment.delete');
+});
+Route::prefix('admin')->middleware('auth','admin', 'verified')->group(function() {
     Route::get('/', AdminMainController::class);
 
     Route::prefix('posts')->group(function () {
@@ -83,4 +97,4 @@ Route::prefix('admin')->group(function() {
     });
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
